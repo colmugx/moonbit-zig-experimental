@@ -1,0 +1,13 @@
+{
+  "is-main": true,
+  "import": [
+    "colmugx/hello/http"
+  ],
+  "link": {
+    "native": {
+      "cc": "zig build --"
+      // "cc": "zig cc",
+      // "cc-flags": "-O2"
+    }
+  }
+}

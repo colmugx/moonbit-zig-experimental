@@ -1,0 +1,13 @@
+.{
+    .name = .moonbit_zig,
+    .version = "0.0.1",
+    .fingerprint = 0x4f15ae445530e0f,
+    .minimum_zig_version = "0.14.0",
+    .dependencies = .{},
+
+    .paths = .{
+        "build.zig",
+        "build.zig.zon",
+        "platform",
+    },
+}
