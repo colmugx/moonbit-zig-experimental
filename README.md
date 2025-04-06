@@ -27,7 +27,7 @@ Zig was chosen over C for the underlying implementation due to several advantage
 
 3. **Interoperability**
   * Currently, interoperability is achieved via the C ABI (Phase 1).
-  * The plan is to enable direct MoonBit - Zig interoperability in the future (Phase 2).
+  * The plan is to enable direct MoonBit - Zig interoperability in the future ~~(Phase 2)~~ (Implemented).
 
 ## Architecture Evolution
 
@@ -35,7 +35,7 @@ The key components are:
 
 * **MoonBit:** The primary language for application development.
 * **Zig:** Implements the underlying HTTP client logic.
-* **C:** Acts as the intermediate bridge ~~(in Phase 1)~~ (Implemented).
+* ~~**C:** Acts as the intermediate bridge (in Phase 1).~~
 
 ### Past Architecture (Phase 1)
 

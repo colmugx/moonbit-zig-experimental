@@ -31,7 +31,7 @@
 
 - MoonBit：目标编程语言
 - Zig：用于实现底层 HTTP 客户端
-- C：作为 MoonBit 和 Zig 之间的桥接层
+- ~~C：作为 MoonBit 和 Zig 之间的桥接层~~
 
 ### 过去架构 (第一阶段) 
 
