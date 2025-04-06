@@ -2,26 +2,23 @@ const std = @import("std");
 const mem = std.mem;
 const http = std.http;
 
+const moonbit = @cImport({
+    @cInclude("moonbit.h");
+});
+
 // 定义一个错误类型，便于内部出错时返回
-const Error = error{ResponseConversionFailed};
+const Error = error{
+    NullPointer,
+    AllocationFailure,
+    ResponseConversionFailed,
+};
 
-pub const c_allocator = std.heap.c_allocator;
-
-/// 将 C 字符串转换为 Zig slice（直到遇到 0 结束）
-fn cStrToSlice(c_str: [*:0]const u8) []const u8 {
-    return std.mem.sliceTo(c_str, 0);
-}
-
-/// 将 Zig slice 转换为 C 字符串，分配的内存由 c_allocator 提供，调用者负责释放
-fn sliceToCStr(allocator: std.mem.Allocator, slice: []const u8) ?[*]u8 {
-    const c_str = allocator.alloc(u8, slice.len + 1) catch return null;
-    @memcpy(c_str[0..slice.len], slice);
-    c_str[slice.len] = 0;
-    return c_str.ptr;
-}
+const c_allocator = std.heap.c_allocator;
 
 /// 发起 HTTP 请求，并将响应内容以字节 slice 返回（内部使用 c_allocator）
-fn makeRequest(method: http.Method, url: []const u8, body: ?[]const u8) ![]u8 {
+fn makeRequest(method: http.Method, url: ?[]const u8, body: ?[]const u8) ![]u8 {
+    if (url == null) return Error.NullPointer;
+
     const allocator = c_allocator;
     var client = http.Client{
         .allocator = allocator,
@@ -36,7 +33,7 @@ fn makeRequest(method: http.Method, url: []const u8, body: ?[]const u8) ![]u8 {
 
     const response = try client.fetch(.{
         .method = method,
-        .location = .{ .url = url },
+        .location = .{ .url = url.? },
         .extra_headers = headers,
         .payload = body,
         .response_storage = .{ .dynamic = &response_body },
@@ -54,32 +51,68 @@ fn makeRequest(method: http.Method, url: []const u8, body: ?[]const u8) ![]u8 {
     return result;
 }
 
+pub fn moonbitStringToCStr(str: ?moonbit.moonbit_string_t) ?[]const u8 {
+    if (str == null) return null;
+    // 解包实际的字符串指针
+    const actualStr = str.?;
+    const len: usize = @intCast(moonbit.Moonbit_array_length(actualStr));
+    if (len == 0) return null;
+
+    var result = c_allocator.alloc(u8, len + 1) catch return null;
+    const s = actualStr[0..len];
+    for (s, 0..) |ch, i| {
+        result[i] = @truncate(ch);
+    }
+    result[len] = 0;
+    return result;
+}
+
+pub fn cStrToMoonbitString(cstr: ?[]u8) !moonbit.moonbit_string_t {
+    if (cstr == null) return Error.ResponseConversionFailed;
+    const s = cstr.?;
+    const len = s.len;
+    var result = moonbit.moonbit_make_string(@intCast(len), 0);
+    if (result == null) return Error.AllocationFailure;
+    const out = result[0..len];
+    for (s[0..len], 0..) |ch, i| {
+        out[i] = @intCast(ch);
+    }
+    return result;
+}
+
 /// 供 C 调用的 HTTP GET 接口，出错时返回 null
-pub export fn zig_http_get(url: [*:0]const u8) ?[*]u8 {
-    const url_slice = cStrToSlice(url);
+pub export fn zig_http_get(url: moonbit.moonbit_string_t) moonbit.moonbit_string_t {
+    const url_slice = moonbitStringToCStr(url);
     const response = makeRequest(.GET, url_slice, null) catch return null;
-    return sliceToCStr(c_allocator, response);
+    const moonbit_str = cStrToMoonbitString(response) catch return null;
+    c_allocator.free(response);
+    return moonbit_str;
 }
 
 /// 供 C 调用的 HTTP POST 接口，出错时返回 null
-pub export fn zig_http_post(url: [*:0]const u8, body: [*:0]const u8) ?[*]u8 {
-    const url_slice = cStrToSlice(url);
-    const body_slice = cStrToSlice(body);
+pub export fn zig_http_post(url: moonbit.moonbit_string_t, body: moonbit.moonbit_string_t) moonbit.moonbit_string_t {
+    const url_slice = moonbitStringToCStr(url);
+    const body_slice = moonbitStringToCStr(body);
     const response = makeRequest(.POST, url_slice, body_slice) catch return null;
-    return sliceToCStr(c_allocator, response);
+    const moonbit_str = cStrToMoonbitString(response) catch return null;
+    c_allocator.free(response);
+    return moonbit_str;
 }
 
 /// 供 C 调用的 HTTP PUT 接口，出错时返回 null
-pub export fn zig_http_put(url: [*:0]const u8, body: [*:0]const u8) ?[*]u8 {
-    const url_slice = cStrToSlice(url);
-    const body_slice = cStrToSlice(body);
+pub export fn zig_http_put(url: moonbit.moonbit_string_t, body: moonbit.moonbit_string_t) moonbit.moonbit_string_t {
+    const url_slice = moonbitStringToCStr(url);
+    const body_slice = moonbitStringToCStr(body);
     const response = makeRequest(.PUT, url_slice, body_slice) catch return null;
-    return sliceToCStr(c_allocator, response);
+    const moonbit_str = cStrToMoonbitString(response) catch return null;
+    c_allocator.free(response);
+    return moonbit_str;
 }
-
 /// 供 C 调用的 HTTP DELETE 接口，出错时返回 null
-pub export fn zig_http_delete(url: [*:0]const u8) ?[*]u8 {
-    const url_slice = cStrToSlice(url);
+pub export fn zig_http_delete(url: moonbit.moonbit_string_t) moonbit.moonbit_string_t {
+    const url_slice = moonbitStringToCStr(url);
     const response = makeRequest(.DELETE, url_slice, null) catch return null;
-    return sliceToCStr(c_allocator, response);
+    const moonbit_str = cStrToMoonbitString(response) catch return null;
+    c_allocator.free(response);
+    return moonbit_str;
 }
