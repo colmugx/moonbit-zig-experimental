@@ -39,7 +39,7 @@ The key components are:
 
 ### Past Architecture (Phase 1)
 
-commit [21e56bb](/commit/21e56bb)
+[21e56bb](https://github.com/colmugx/moonbit-zig-experimental/commit/21e56bb)
 
 ```
 MoonBit -> C ABI -> Zig
