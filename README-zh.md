@@ -35,7 +35,7 @@
 
 ### 过去架构 (第一阶段) 
 
-[#21e56bb](/tree/21e56bb8ed27bd0aee0389d5417cf8a58068f46f)
+[#21e56bb](21e56bb)
 
 ```
 MoonBit -> C ABI -> Zig
@@ -84,6 +84,10 @@ It Works! You've requested: https://jsonplaceholder.typicode.com/todos/1
 ```bash
 moon build --target native
 ```
+
+## 限制和已知问题
+
+当前实现存在一个重要限制：异常处理机制尚未完善。虽然已经实现了 MoonBit 到 Zig 的直接函数调用，但在处理 Zig 端抛出的异常时还存在问题： Zig 的错误目前无法被优雅地转换为 MoonBit 的异常处理机制
 
 ## 注意事项
 

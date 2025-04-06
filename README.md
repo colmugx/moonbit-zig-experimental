@@ -27,7 +27,7 @@ Zig was chosen over C for the underlying implementation due to several advantage
 
 3. **Interoperability**
   * Interoperability is achieved via the C ABI (Phase 1).
-  * The plan is to enable direct MoonBit - Zig interoperability in the future ~~(Phase 2)~~ (Implemented).
+  * Direct MoonBit - Zig interoperability ~~(Phase 2)~~ (Implemented).
 
 ## Architecture Evolution
 
@@ -39,7 +39,7 @@ The key components are:
 
 ### Past Architecture (Phase 1)
 
-[#21e56bb](/tree/21e56bb8ed27bd0aee0389d5417cf8a58068f46f)
+[#21e56bb](21e56bb)
 
 ```
 MoonBit -> C ABI -> Zig
@@ -95,3 +95,7 @@ moon build --target native
 1. Requires Zig 0.11.0 or higher
 2. Ensure MoonBit runtime environment is properly set up
 3. Currently supports macOS/aarch64 platform only
+
+## Limitations and Known Issues
+
+The current implementation has a significant limitation: the exception handling mechanism is incomplete. While direct function calls from MoonBit to Zig have been implemented, there are issues when handling exceptions thrown from the Zig side. Specifically, Zig's errors cannot currently be gracefully converted into MoonBit's exception handling mechanism.
