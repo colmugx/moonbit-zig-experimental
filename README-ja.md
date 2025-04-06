@@ -33,15 +33,17 @@
 
 * **MoonBit：** 主要なアプリケーション開発言語
 * **Zig：** HTTP クライアントの基盤ロジックを実装
-* **C：** MoonBit - Zig 間の中間ブリッジ（フェーズ1）
+* **C：** MoonBit - Zig 間の中間ブリッジ ~~（フェーズ1）~~ （実装する）
 
-### 現在のアーキテクチャ（フェーズ1）
+### 過去のアーキテクチャ（フェーズ1）
+
+[#21e56bb](/tree/21e56bb8ed27bd0aee0389d5417cf8a58068f46f)
 
 ```
 MoonBit -> C ABI -> Zig
 ```
 
-### 目標アーキテクチャ（フェーズ2）
+### 現在のアーキテクチャ（フェーズ2）
 
 ```
 MoonBit -> Zig
@@ -57,6 +59,27 @@ fn main {
   // POST リクエストを実行
   println(@http.curl_post("https://api.example.com", "{'data': 'test'}"))
 }
+```
+
+### CLI
+
+```bash
+> ./zig-out/bin/moonbit_zig
+ No request url.
+
+ Usage:
+  moonbit_zig <url>
+
+> ./zig-out/bin/moonbit_zig https://jsonplaceholder.typicode.com/todos/1
+It Works! You've requested: https://jsonplaceholder.typicode.com/todos/1
+HTTP request returned non-OK status: http.Status.bad_request
+<html>
+<head><title>400 Bad Request</title></head>
+<body>
+<center><h1>400 Bad Request</h1></center>
+<hr><center>cloudflare</center>
+</body>
+</html>
 ```
 
 ## ビルド方法

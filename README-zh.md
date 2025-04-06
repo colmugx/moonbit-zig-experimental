@@ -25,7 +25,7 @@
 
 3. **互操作性**
    - 目前通过 C ABI 作为桥接（第一阶段）
-   - 计划直接实现 MoonBit - Zig 互操作（第二阶段）
+   - 计划直接实现 MoonBit - Zig 互操作 ~~（第二阶段）~~ （已实现）
 
 ## 架构演进
 
@@ -33,12 +33,15 @@
 - Zig：用于实现底层 HTTP 客户端
 - C：作为 MoonBit 和 Zig 之间的桥接层
 
-### 当前架构 (第一阶段)
+### 过去架构 (第一阶段) 
+
+[#21e56bb](/tree/21e56bb8ed27bd0aee0389d5417cf8a58068f46f)
+
 ```
 MoonBit -> C ABI -> Zig
 ```
 
-### 目标架构 (第二阶段)
+### 当前架构 (第二阶段)
 ```
 MoonBit -> Zig
 ```
@@ -53,6 +56,27 @@ fn main {
   // 发起 POST 请求
   println(@http.curl_post("https://api.example.com", "{'data': 'test'}"))
 }
+```
+
+### CLI
+
+```bash
+> ./zig-out/bin/moonbit_zig
+ No request url.
+
+ Usage:
+  moonbit_zig <url>
+
+> ./zig-out/bin/moonbit_zig https://jsonplaceholder.typicode.com/todos/1
+It Works! You've requested: https://jsonplaceholder.typicode.com/todos/1
+HTTP request returned non-OK status: http.Status.bad_request
+<html>
+<head><title>400 Bad Request</title></head>
+<body>
+<center><h1>400 Bad Request</h1></center>
+<hr><center>cloudflare</center>
+</body>
+</html>
 ```
 
 ## 构建

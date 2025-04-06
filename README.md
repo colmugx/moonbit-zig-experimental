@@ -35,15 +35,17 @@ The key components are:
 
 * **MoonBit:** The primary language for application development.
 * **Zig:** Implements the underlying HTTP client logic.
-* **C:** Acts as the intermediate bridge (in Phase 1).
+* **C:** Acts as the intermediate bridge ~~(in Phase 1)~~ (Implemented).
 
-### Current Architecture (Phase 1)
+### Past Architecture (Phase 1)
+
+[#21e56bb](/tree/21e56bb8ed27bd0aee0389d5417cf8a58068f46f)
 
 ```
 MoonBit -> C ABI -> Zig
 ```
 
-### Target Architecture (Phase 2)
+### Current Architecture (Phase 2)
 
 ```
 MoonBit -> Zig
@@ -59,6 +61,27 @@ fn main {
   // POST request
   println(@http.curl_post("https://api.example.com", "{'data': 'test'}"))
 }
+```
+
+### CLI
+
+```bash
+> ./zig-out/bin/moonbit_zig
+ No request url.
+
+ Usage:
+  moonbit_zig <url>
+
+> ./zig-out/bin/moonbit_zig https://jsonplaceholder.typicode.com/todos/1
+It Works! You've requested: https://jsonplaceholder.typicode.com/todos/1
+HTTP request returned non-OK status: http.Status.bad_request
+<html>
+<head><title>400 Bad Request</title></head>
+<body>
+<center><h1>400 Bad Request</h1></center>
+<hr><center>cloudflare</center>
+</body>
+</html>
 ```
 
 ## Build
