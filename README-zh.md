@@ -24,7 +24,7 @@
    - 无需引入外部依赖即可实现核心功能
 
 3. **互操作性**
-   - 目前通过 C ABI 作为桥接（第一阶段）
+   - 通过 C ABI 作为桥接（第一阶段）
    - 计划直接实现 MoonBit - Zig 互操作 ~~（第二阶段）~~ （已实现）
 
 ## 架构演进
@@ -69,14 +69,12 @@ fn main {
 
 > ./zig-out/bin/moonbit_zig https://jsonplaceholder.typicode.com/todos/1
 It Works! You've requested: https://jsonplaceholder.typicode.com/todos/1
-HTTP request returned non-OK status: http.Status.bad_request
-<html>
-<head><title>400 Bad Request</title></head>
-<body>
-<center><h1>400 Bad Request</h1></center>
-<hr><center>cloudflare</center>
-</body>
-</html>
+{
+  "userId": 1,
+  "id": 1,
+  "title": "delectus aut autem",
+  "completed": false
+}
 ```
 
 ## 构建

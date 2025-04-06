@@ -26,7 +26,7 @@ Zig was chosen over C for the underlying implementation due to several advantage
   * This eliminates the need for external dependencies for core HTTP functionality.
 
 3. **Interoperability**
-  * Currently, interoperability is achieved via the C ABI (Phase 1).
+  * Interoperability is achieved via the C ABI (Phase 1).
   * The plan is to enable direct MoonBit - Zig interoperability in the future ~~(Phase 2)~~ (Implemented).
 
 ## Architecture Evolution
@@ -74,14 +74,12 @@ fn main {
 
 > ./zig-out/bin/moonbit_zig https://jsonplaceholder.typicode.com/todos/1
 It Works! You've requested: https://jsonplaceholder.typicode.com/todos/1
-HTTP request returned non-OK status: http.Status.bad_request
-<html>
-<head><title>400 Bad Request</title></head>
-<body>
-<center><h1>400 Bad Request</h1></center>
-<hr><center>cloudflare</center>
-</body>
-</html>
+{
+  "userId": 1,
+  "id": 1,
+  "title": "delectus aut autem",
+  "completed": false
+}
 ```
 
 ## Build

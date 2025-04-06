@@ -24,7 +24,7 @@
   * そのため、コアとなる HTTP 機能に外部ライブラリへの依存が必要ありません。
 
 3. **相互運用性**
-  * 現在はC ABIを介して連携しています（フェーズ1）。
+  * C ABIを介して連携しています（フェーズ1）。
   * 将来的には MoonBit と Zig の直接的な相互運用を目指しています ~~（フェーズ2）~~ （実装する）。
 
 ## アーキテクチャの変遷
@@ -72,14 +72,12 @@ fn main {
 
 > ./zig-out/bin/moonbit_zig https://jsonplaceholder.typicode.com/todos/1
 It Works! You've requested: https://jsonplaceholder.typicode.com/todos/1
-HTTP request returned non-OK status: http.Status.bad_request
-<html>
-<head><title>400 Bad Request</title></head>
-<body>
-<center><h1>400 Bad Request</h1></center>
-<hr><center>cloudflare</center>
-</body>
-</html>
+{
+  "userId": 1,
+  "id": 1,
+  "title": "delectus aut autem",
+  "completed": false
+}
 ```
 
 ## ビルド方法
