@@ -1,6 +1,13 @@
 const std = @import("std");
 
-pub fn build(b: *std.Build) void {
+pub fn build(b: *std.Build) !void {
+    b.release_mode = .small;
+
+    const allocator = std.heap.page_allocator;
+    const envmap = try std.process.getEnvMap(allocator);
+
+    const home_path = envmap.get("HOME").?;
+
     const target = b.standardTargetOptions(.{
         .default_target = .{
             .cpu_arch = .aarch64,
@@ -20,9 +27,20 @@ pub fn build(b: *std.Build) void {
         .code_model = .small,
     });
 
-    http_mod.addIncludePath(.{ .cwd_relative = "~/.moon/include" });
+    http_mod.addIncludePath(.{
+        .cwd_relative = b.pathJoin(&.{
+            home_path,
+            ".moon/include",
+        }),
+    });
+
     http_mod.addCSourceFile(.{
-        .file = .{ .cwd_relative = "~/.moon/lib/runtime.c" },
+        .file = .{
+            .cwd_relative = b.pathJoin(&.{
+                home_path,
+                ".moon/lib/runtime.c",
+            }),
+        },
         .flags = &.{
             "-O3",
         },
@@ -43,7 +61,12 @@ pub fn build(b: *std.Build) void {
         .code_model = .small,
     });
 
-    exe.addIncludePath(.{ .cwd_relative = "~/.moon/include" });
+    exe.addIncludePath(.{
+        .cwd_relative = b.pathJoin(&.{
+            home_path,
+            ".moon/include",
+        }),
+    });
 
     exe.addCSourceFile(.{
         .file = b.path("target/native/release/build/main/main.c"),
